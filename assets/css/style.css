@@ -1,0 +1,14 @@
+
+body {
+    background-image: url(../images/triviaBackground.jpg);
+    background-size: cover;
+}
+
+.jumbotron {
+    background-color: rgb(0, 136, 255);
+    background-size: cover;
+    color:rgb(255, 132, 0);
+    text-shadow: 1px 2px black;
+    font-size: 25px;
+    margin: 100px;;
+}
