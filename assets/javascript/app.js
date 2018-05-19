@@ -1,34 +1,28 @@
-// window.onload = function() {
-//     $("#timerDisplay").reset(timer);
-//   };
-//   var intervalId;
 
-// // prevents the clock from being sped up unnecessarily
-// var clockRunning = false;
-
-// //Our timer object
-// var timer = {
-
-//   time: 0,
-
-//   reset: function() {
-
-//     timer.time = 0;
-
-//     //Change the "timerDisplay" div to "00:10."
-//     $("#timerDisplay").text("00:10");
-
-//   },
-//   start: function() {
-//     if (!clockRunning) {
-//         intervalId = setInterval(timer.count, 1000);
-//         clockRunning = true;
-//       }
-//     },
-//     stop: function() {
-//         clearInterval(intervalId);
-//         clockRunning = false;
-  
+//     var triviaTimer = new Time("00:10").getTime();
+    
+//     var x = setInterval(function()) {
+    
+//     // Get todays date and time
+//     var now = new Time().getTime();
+    
+//     // Find the distance between now an the count down date
+//     var distance = triviaTimer - now;
+    
+//     // Time calculations for days, hours, minutes and seconds
+//     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+//     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+//     // Output the result in an element with id="demo"
+//     document.getElementById("timerDisplay").innerHTML = minutes + "m " + seconds + "s ";
+    
+//     // If the count down is over, write some text 
+//     if (distance < 0) {
+//         clearInterval(x);
+//         document.getElementById("timerDisplay").innerHTML = "EXPIRED";
+//     }
+// }, 1000);
+// // 
 
 function Quiz(questions){
     this.score = 0;
