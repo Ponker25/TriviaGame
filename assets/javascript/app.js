@@ -1,28 +1,22 @@
+var timeLeft = 10
+ var timerId
+function startTimer() {
+    $('#timerDisplay').text(`Time Remaining = 00:${timeLeft >= 10 ? timeLeft : "0" + timeLeft}`)
+    timerId = setInterval(timer, 1000)
+}
+function timer() {
+    timeLeft--
+    $('#timerDisplay').text(`Time Remaining = 00:${timeLeft >= 10 ? timeLeft : "0" + timeLeft}`)
+    if(timeLeft === 0){
+        clearInterval(timerId)
+        ++quiz.questionsIndex;
+        if (!(quiz.isEnded())) {
+            populate();
+        }
+    }
+}
 
-//     var triviaTimer = new Time("00:10").getTime();
-    
-//     var x = setInterval(function()) {
-    
-//     // Get todays date and time
-//     var now = new Time().getTime();
-    
-//     // Find the distance between now an the count down date
-//     var distance = triviaTimer - now;
-    
-//     // Time calculations for days, hours, minutes and seconds
-//     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-//     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
-//     // Output the result in an element with id="demo"
-//     document.getElementById("timerDisplay").innerHTML = minutes + "m " + seconds + "s ";
-    
-//     // If the count down is over, write some text 
-//     if (distance < 0) {
-//         clearInterval(x);
-//         document.getElementById("timerDisplay").innerHTML = "EXPIRED";
-//     }
-// }, 1000);
-// // 
+console.log(this);
 
 function Quiz(questions){
     this.score = 0;
@@ -30,22 +24,43 @@ function Quiz(questions){
     this.questionsIndex = 0;
 }
 
-Quiz.prototype.getQuestionIndex = function() {
+Quiz.prototype.getCurrentQuestion = function () {
+    console.log(this.questionsIndex);
     return this.questions[this.questionsIndex];
 }
 
 Quiz.prototype.isEnded = function() {
-    return this.questions.length === this.questionIndex;
+    console.log(this.questionsIndex , "this is in IsEnded");
+    return this.questionsIndex >= (this.questions.length);
 }
 
 Quiz.prototype.guess = function(answer) {
-    this.questionIndex++;
-
-    if(this.getQuestionIndex().correctAnswer(answer)) {
+    
+    if(this.getCurrentQuestion().correctAnswer(answer)) {
         this.score++;
+        ++this.questionsIndex;
+        if ( !(this.isEnded() )) {
+            clearInterval(timerId)
+            populate();
+        }
+    }
+    else{
+
+        ++this.questionsIndex;
+        if ( !(this.isEnded()) ) {
+            clearInterval(timerId)
+            populate();
+        }
     }
 
-    this.questionIndex++;
+}
+Quiz.prototype.printQuestions = function(){
+        var questionString = "";
+    
+        for(var i = 0; i < this.questions.length; i++){
+            questionString += this.questions[i].text + " , ";
+        }
+        console.log(questionstring);
 }
 
 console.log("Test")
@@ -60,62 +75,7 @@ Question.prototype.correctAnswer = function(choice) {
     return choice === this.answer;
 }
 
-console.log("Test")
-
-function populate() {
-    if (quiz.isEnded()) {
-        showScores();
-    }
-    else {
-        // show question
-        var element = document.getElementById("question");
-        element.innerHTML = quiz.getQuestionIndex().text;
-        
-        // try for looping through the question if it doesnt work try it inside the choices loop
-        Quiz.prototype.printQuestions = function(){
-            var questionString = "";
-        
-            for(var i = 0; i < questions.length; i++){
-                questionString += questions[i].text + " , ";
-            }
-            console.log(questionstring);
-        }
-
-        // show choices 
-        var choices = quiz.getQuestionIndex().choices;
-            for (var i = 0; i < choices.length; i++) {
-                var element = document.getElementById("choice" + i);
-                element.innerHTML = choices[i];
-                guess("btn" + i, choices[i]);
-                console.log(choices);
-        }
-        showProgress();
-    }
-};
-
-function guess (id, guess) {
-    var button = document.getElementById(id);
-    button.onclick = function() {
-            quiz.guess(guess);
-            populate();
-            console.log(guess);
-    }
-};
-
-function showProgress() {
-    var currentQuestionNumber = quiz.questionsIndex + 1;
-    var element = document.getElementById("progress");
-    element.innerHTML = "Questions " + currentQuestionNumber + " of " + quiz.questions.length;
-};
-
-function showScores() {
-    var gameOverHtml = "<h1>How well do you know 007?<h1>";
-        gameOverHtml += "<h2 id='score'>Your scores: " + quiz.score + "</h2>";
-        var element = document.getElementById("quiz");
-        element.innerHTML = gameOverHtml;
-};
-
-// <!-- * Shows only one question until the player answers it or their time runs out.
+console.log("Test");
 
 var questions = [
     new Question("Which agent supplies Bond with all of his gadgets?", ["Q", "M", "V", "A"], "Q"),
@@ -126,6 +86,69 @@ var questions = [
 ];
 
 var quiz = new Quiz(questions);
+
+function populate() {
+    timeLeft = 10
+    startTimer()
+    console.log(quiz.isEnded());
+    if (quiz.isEnded()) {
+        showScores();
+    }
+    else {
+        // show question
+        console.log("hello from inside populate before quiz clg");
+        console.log(quiz.getCurrentQuestion().text);
+       $("#question").text(quiz.getCurrentQuestion().text)
+        
+        // try for looping through the question if it doesnt work try it inside the choices loop
+       
+
+        // show choices 
+        var choices = quiz.getCurrentQuestion().choices;
+
+        function populateLoop(params) {
+            console.log("populate loop");
+            for (var i = 0; i < choices.length; i++) {
+                $("#choice" + i).text(choices[i])
+                guess("btn" + i, choices[i]);
+                // console.log(choices[i]);
+            }
+        }
+        populateLoop()
+        showProgress();
+    }
+};
+
+function guess (id, guess) {
+    var button = document.getElementById(id);
+    button.onclick = function() {
+        if ( !(quiz.isEnded() )) {
+            quiz.guess(guess);
+            console.log(guess);
+        }else{
+            clearInterval(timerId)
+            populate();
+        }
+    }
+};
+
+function showProgress() {
+    var currentQuestionNumber = quiz.questionsIndex + 1;
+    var element = document.getElementById("progress");
+    element.innerHTML = "Questions " + currentQuestionNumber + " of " + quiz.questions.length;
+};
+
+function showScores() {
+    console.log("show scores is running");
+    var gameOverHtml = "<h1>How well do you know 007?<h1>";
+        gameOverHtml += "<h2 id='score'>Your Score: " + quiz.score + "</h2>";
+        var element = $("#quiz");
+        element.html(gameOverHtml)
+};
+
+// <!-- * Shows only one question until the player answers it or their time runs out.
+
+
 
 populate();
 
